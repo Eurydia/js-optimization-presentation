@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title></title>
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/white.css" id="theme" />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+	<link rel="stylesheet" href="css/layout.css" />
+	<link rel="stylesheet" href="plugin/customcontrols/style.css">
+
+
+
+    <script defer src="dist/fontawesome/all.min.js"></script>
+
+	<script type="text/javascript">
+		var forgetPop = true;
+		function onPopState(event) {
+			if(forgetPop){
+				forgetPop = false;
+			} else {
+				parent.postMessage(event.target.location.href, "app://obsidian.md");
+			}
+        }
+		window.onpopstate = onPopState;
+		window.onmessage = event => {
+			if(event.data == "reload"){
+				window.document.location.reload();
+			}
+			forgetPop = true;
+		}
+
+		function fitElements(){
+			const itemsToFit = document.getElementsByClassName('fitText');
+			for (const item in itemsToFit) {
+				if (Object.hasOwnProperty.call(itemsToFit, item)) {
+					var element = itemsToFit[item];
+					fitElement(element,1, 1000);
+					element.classList.remove('fitText');
+				}
+			}
+		}
+
+		function fitElement(element, start, end){
+
+			let size = (end + start) / 2;
+			element.style.fontSize = `${size}px`;
+
+			if(Math.abs(start - end) < 1){
+				while(element.scrollHeight > element.offsetHeight){
+					size--;
+					element.style.fontSize = `${size}px`;
+				}
+				return;
+			}
+
+			if(element.scrollHeight > element.offsetHeight){
+				fitElement(element, start, size);
+			} else {
+				fitElement(element, size, end);
+			}		
+		}
+
+
+		document.onreadystatechange = () => {
+			fitElements();
+			if (document.readyState === 'complete') {
+				if (window.location.href.indexOf("?export") != -1){
+					parent.postMessage(event.target.location.href, "app://obsidian.md");
+				}
+				if (window.location.href.indexOf("print-pdf") != -1){
+					let stateCheck = setInterval(() => {
+						clearInterval(stateCheck);
+						window.print();
+					}, 250);
+				}
+			}
+	};
+
+
+        </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides"><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+.reveal pre code {
+height: fit-content;
+max-height:fit-content;
+max-width: fit-content;
+width: fit-content;
+}
+.reveal pre {
+height: fit-content;
+max-height:fit-content;
+max-width: fit-content;
+width: fit-content;
+}
+</style>
+
+```c
+#include <stdio.h>
+#include <stdio.h>
+
+// Don't worry, this is for me. :)
+int main() {
+    printf("Checking contrast...\n");
+    printf("If you can’t read this, squint harder!\n");
+    printf("Contrast test complete.\n");
+    printf("Thank you for your patience!\n");
+    return 0;
+}
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# JavaScript Optimization Techniques
+</div>
+
+<aside class="notes"><ul>
+<li>Introduction to the project</li>
+<li>Part one: Experiment with lexer optimization<ul>
+<li>Let&#39;s only improve time complexity</li>
+<li>Best regex practices in JS</li>
+<li>General optimization techniques involving loops</li>
+</ul>
+</li>
+<li>Part two: Do not drink water with a chopstick<ul>
+<li>trying to optimize JS might be impractical<ul>
+<li>Different web browsers and JS engine have different behavior</li>
+<li>due to environment, cannot guarantee optimization behavior for a JS program</li>
+</ul>
+</li>
+<li>Case and point</li>
+</ul>
+</li>
+<li>Conclusion</li>
+</ul>
+</aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Outline
+
+1. Introduction to example project
+2. Experiment on project optimization
+3. JavaScript execution environment
+4. Conclusion and closing remarks
+</div>
+
+<aside class="notes"><p>Good afternoon everybody.  </p>
+<p>Before we begin, here is an overview of what we will talk about. </p>
+<p>First, I introduce a case study project. We  will use it to discuss concrete applications of optimization techniques.</p>
+<p>Lastly, we will talk about the result of the experiment and conclusion.</p>
+</aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Section 1
+
+### Project introduction
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Structogram builder
+
+- Web application written in TypeScript
+- Fully client side
+- Takes a source code and draws a **structogram**
+
+
+<img src="University/05 2024 Fall/Compiler/Coursework/Presentation for lecture grade/assets/images/bitly-qrcode-online-structogram-builder.svg" alt="" style="width: 300px; object-fit: fill">
+
+ 
+Or copy the URL ➡ https://bit.ly/3ZvBQkM
+
+<aside class="notes"><p>Our case study project is a web application written in TypeScript. </p>
+<p>It takes a piece of code and produces a structogram.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe style="aspect-ratio: 16/10; width: 1200px; max-width: 2000px" loading="lazy" src="https://eurydia.github.io/project-structogram-builder-online/?content="></iframe>
+</div>
+
+<aside class="notes"><p>Here&#39;s a demonstration. </p>
+<p>You have the statements or the processes.</p>
+<p>You have branches.</p>
+<p>You have loops.</p>
+<p>You have subprograms.</p>
+<p>You have comments.</p>
+<pre><code>a := a - b;
+
+if (a &gt; b) {
+  a := a - b;
+} else {
+  b := b - a;
+}
+
+
+while (a != b) {
+    if (a &gt; b) {
+      a := a - b;
+    } else {
+      b := b - a;
+    }
+}
+
+function gcd(in int a, in int b) {
+    while (a != b) {
+        if (a &gt; b) {
+          a := a - b;
+        } else {
+          b := b - a;
+        }
+    }
+    return a;
+}
+
+
+// Three of the hardest things for people to say:
+// I was wrong
+// I need help
+// Worshcs- worshchir- worcest—
+</code></pre>
+</aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Implementation
+
+- Lexical analyzer *(string ➡ token stream)*
+- Parser *(token stream ➡ AST)*
+- Renderer *(AST ➡ diagram)*
+
+ <aside class="notes"><p>It has three core components. We have the lexical analyzer, the parser, and the renderer. </p>
+<p>These are the steps we learned in the course. First, we pass the user input through the lexical analyzer, so we turn a string into a stream of tokens.</p>
+<p>Then we pass these tokens through the parser, and we get an abstract syntax tree. </p>
+<p>Then we give the abstract syntax tree to the renderer. It renders a structogram, which is our output.</p>
+<p>You will see that we do not have a semantic analyzer or a code generator, so rather than a proper programming language, what we have here is closer to a markup language like HTML rather than C.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Section 2
+
+### Experiment on optimizing the lexer 
+
+<aside class="notes"><p>With that I hope that was enough context to understand what we are trying to do.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Optimizing the lexer
+
+- Optimize the lexer's execution time
+
+<aside class="notes"><p>By optimizing the lexer, I mean optimizing the execution time.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Functions of interest
+
+- **`lexerInit`**
+- **`lexerGetNextToken`**
+
+
+```ts []
+const lexer = lexerInit(content);
+const tokens: Token[] = []
+while (lexer.length > 0) {
+	const token = lexerGetNextToken(lexer);
+	tokens.push(token);
+}
+```
+
+<aside class="notes"><p>We have two functions of interests here; the lexerInit and lexerGetAllTokens functions. </p>
+<p>I really wish I could give you more context about the lexer analyzer.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### `lexerInit`
+
+```ts []
+export const lexerInit = (str: string): Lexer => {
+	const strLen = inStr.length;
+	let outStr = "";
+	let pos = 0;
+	while (pos < strLen) {
+		if (
+			pos + 1 < strLen && inStr.substr(pos, pos+2) === "//"
+		) {
+			while (pos < strLen && inStr[pos] !== "\n") 
+			{
+				pos++;
+			}
+		} else {
+			outStr += inStr[pos++];
+		}
+	}
+	// more code
+	// ... folded
+};
+``` 
+
+<aside class="notes"><p>The non-trivial step when we remove the comments. Let&#39;s take a look at that because there is no room for improvement in other steps.</p>
+<p>We will collect each character into the output string. When we encounter a comment, we skip that chunk, and by omitting we effectively remove it from the processed string.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Possible improvements
+
+- Substitute the inner loop with **`indexOf`** function
+ - Repeated length-one string concatenation
+
+<aside class="notes"><p>One improvement we can make is by substituting the inner loop with a built in function.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Justification
+
+- **`indexOf`** bypasses overhead from manual iteration[1]
+- CPU cache utilization[1]
+
+↩1: Google. *V8 JavaScript Engine Documentation: Built-in Functions*, https://v8.dev/docs/builtin-functions.
+
+<aside class="notes"><p>While the behavior  of the manual iteration and indexof is the same. The main justification is that loop is a high level construct. We are instructing javascript what to do. While indexof is provided by the engine so we want to take advantage of engine-optimized function.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+```ts []
+while (pos < strLen) {
+	if (
+		pos + 1 < strLen && inStr.substr(pos, pos+2) === "//"
+	) {
+		const nextNewLine = inStr.indexOf("\n", pos + 2);
+		pos = nextNewLine === -1 ? strLen : nextNewLine;
+	} else {
+		outStr += inStr[pos++];
+	}
+}
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Justification
+
+- String immutability[1]
+- Array's  dynamic resizing[1]
+- Memory overhead[2]
+
+↩1: ECMA International, *ECMAScript Language Specification, 13th Edition (June 2024), section 6.1.4, "String Type,"* https://262.ecma-international.org/#sec-ecmascript-language-types-string-type.
+
+↩2: Google. *Free Garbage Collection in V8, "Deep Dive into V8’s Garbage Collection Engine,"*, https://v8.dev/blog/free-garbage-collection.
+
+<aside class="notes"><p>Next, we need to eliminate the string concatenation.</p>
+<p>The problem here is that a string in JS is a string and not an array of characters.</p>
+<p>In fact, string is a primitive type, so when we apply an operation on a string, we create a completely new string in memory.</p>
+<p>This is especially bad in our case. We concatenate a single character to the end of the output string, but we need to allocate n + 1 memory to store the new string.</p>
+<p>And we keep allocation new memory and copy a slightly longer string in every iteration.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+```ts [1,9,12]
+let outArr: string[] = []
+while (pos < strLen) {
+	if (
+		pos + 1 < strLen && inStr.substr(pos, pos+2) === "//"
+	) {
+		const nextNewLine = inStr.indexOf("\n", pos + 2);
+		pos = nextNewLine === -1 ? strLen : nextNewLine;
+	} else {
+		outArr.push(inStr[pos++]);
+	}
+}
+const joined = outArr.join();
+```
+
+<aside class="notes"><p>We fix this by using a  dynamic type, array in this case, so we no longer need to allocate memory in every iteration. </p>
+<p>We can simply append the character to the array.</p>
+<p>When we are done, we invoke join which is another built in function to collect the characters back into one string.</p>
+<p>Again, it is more efficient than writing a loop ourselve.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### `lexerGetNextToken`
+
+```ts []
+export const lexerGetAllTokens = (
+  l: Lexer
+): DiagramToken => {
+	let text = ""
+	while (
+		l.cursorPos < l.contentLength &&
+		!/\s/.test(l.content[l.cursorPos])
+	) {
+		text += l.content[l.cursorPos];
+		l.cursorPos++;
+		l.charNumber++;
+	}
+	// more code
+	// ... folded
+};
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Possible improvement
+
+- Repeated length-one string concatenation
+- Regex caching
+
+<aside class="notes"><p>Here, we have the same problem as before, so we will apply the same technique.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Justification
+
+- Reduce overhead by reusing precompiled regex↩[1]↩[2]
+
+↩1: Google. *Improving V8 Regular Expressions: RegExp Tier-Up*, https://v8.dev/blog/regexp-tier-up.
+
+↩2: Google. *Speeding Up Regular Expressions in V8*, https://v8.dev/blog/speeding-up-regular-expressions.
+
+<aside class="notes"><p>The problem with inline regex, or regex in general is that we need to compile them first before we can use it.</p>
+<p>The cost of compiling regex depends on its complexity.</p>
+<p>In our case, even though our regex is extremely simple, we still recompile it in every iteration. </p>
+<p>The  fix here is quite extract the regex out into a constant then reuse the cached regex.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+```ts
+export const lexerGetAllTokens = (
+  l: Lexer
+): DiagramToken => {
+	const textArr: string[] = []
+	const wordB = /\s/;
+	while (
+		l.cursorPos < l.contentLength &&
+		!wordB.test(l.content[l.cursorPos])
+	) {
+		textArr.push(l.content[l.cursorPos]);
+		l.cursorPos++;
+		l.charNumber++;
+	}
+	const joined = textArr.join();
+};
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### Summary
+
+- Be mindful of  memory overhead
+- Take advantage of built in functions
+- Cache regex
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Section 3
+
+### Javascript Execution Enviroment
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### JavaScript Execution enviroment
+
+- Browser is responsible for code execution
+- Different browser has different JS engine
+
+<aside class="notes"><p>The problem with JavaScript is that the consumers can use different browser.</p>
+<p>Different browser uses different engine, with different implementation and different level optimization.</p>
+<p>Why do browsers want to develop their own engine? Because each browser wants to remain competitive.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+### ECMAscript
+
+- Central body for JavaScript
+- Provides language specification
+- Standardizes the behaviors, not the performance
+- Optimization is engine-dependent 
+
+
+<aside class="notes"><p>While we have a central organization like ECMA script which provides language specification. </p>
+<p>It does not concern will the optimizations. We can be certain that one plus one will always be equal to true in major JS engine, but the optimization is not standardized.</p>
+<p>For consumers, this means the browsers are improving their engines to maintain their share of the market.</p>
+<p>The ecma script provide guideline for the behavior of a javascript program, but it does not dictact how a js engine can archive these behavior.</p>
+</div></aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 960px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Closing
+
+- Follow best practices
+- Use the right tool
+
+<aside class="notes"><p>Of course this is really a big issue. There technologies and tools that will standardize the performance of JS. </p>
+<p>Some of you might have heard about web assembly. This is one such tool, but for now it comes a huge compromise. </p>
+<p>I believe that in a few years, the micro optimization we  talked about to day will matter. However, where we stand now, we are taking a tool and use it for some thing it never intended to do.</p>
+<p>Like trying to drink water from  fork.</p>
+<p>Either drink it directly from the glass, or use a spoon like a normal person.</p>
+</div></aside></script></section></div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/math/math.js"></script>
+	<script src="plugin/mermaid/mermaid.js"></script>
+	<script src="plugin/chart/chart.min.js"></script>
+	<script src="plugin/chart/plugin.js"></script>
+	<script src="plugin/customcontrols/plugin.js"></script>
+
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
+
+	  function isLight(color) {
+		let hex = color.replace('#', '');
+
+		// convert #fff => #ffffff
+		if(hex.length == 3){
+			hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+		}
+
+		const c_r = parseInt(hex.substr(0, 2), 16);
+		const c_g = parseInt(hex.substr(2, 2), 16);
+		const c_b = parseInt(hex.substr(4, 2), 16);
+		const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+		return brightness > 155;
+	}
+
+	var bgColor = getComputedStyle(document.documentElement).getPropertyValue('--r-background-color').trim();
+	var isLight = isLight(bgColor);
+
+	if(isLight){
+		document.body.classList.add('has-light-background');
+	} else {
+		document.body.classList.add('has-dark-background');
+	}
+
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        plugins: [
+          RevealMarkdown,
+          RevealHighlight,
+          RevealZoom,
+          RevealNotes,
+          RevealMath.MathJax3,
+		  RevealMermaid,
+		  RevealChart,
+		  RevealCustomControls,
+        ],
+
+
+    	allottedTime: 120 * 1000,
+
+		mathjax3: {
+			mathjax: 'plugin/math/mathjax/tex-mml-chtml.js',
+		},
+		markdown: {
+		  gfm: true,
+		  mangle: true,
+		  pedantic: false,
+		  smartLists: false,
+		  smartypants: false,
+		},
+
+		mermaid: {
+			theme: isLight ? 'default' : 'dark',
+		},
+
+		customcontrols: {
+			controls: [
+			]
+		},
+      };
+
+      // options from URL query string
+      var queryOptions = Reveal().getQueryHash() || {};
+
+      var options = extend(defaultOptions, {"width":960,"height":700,"margin":0.04,"controls":false,"progress":true,"slideNumber":"c/t","overview":false,"transition":"slide","transitionSpeed":"default"}, queryOptions);
+    </script>
+
+    <script>
+      Reveal.initialize(options);
+    </script>
+  </body>
+
+  <!-- created with Advanced Slides -->
+</html>
